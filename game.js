@@ -30,20 +30,14 @@ let keys = {};
 document.addEventListener('keydown', (e) => keys[e.code] = true);
 document.addEventListener('keyup', (e) => keys[e.code] = false);
 
-let touchX = null;
-canvas.addEventListener('touchstart', (e) => {
-  touchX = e.touches[0].clientX;
-});
-canvas.addEventListener('touchmove', (e) => {
-  let currentX = e.touches[0].clientX;
-  let dx = currentX - touchX;
-  player.x += dx * 0.3;
-  touchX = currentX;
-});
-canvas.addEventListener('touchend', () => {
-  playerShoot();
-  touchX = null;
-});
+// Мобильные кнопки
+document.getElementById('leftBtn').addEventListener('touchstart', () => keys['ArrowLeft'] = true);
+document.getElementById('leftBtn').addEventListener('touchend', () => keys['ArrowLeft'] = false);
+
+document.getElementById('rightBtn').addEventListener('touchstart', () => keys['ArrowRight'] = true);
+document.getElementById('rightBtn').addEventListener('touchend', () => keys['ArrowRight'] = false);
+
+document.getElementById('fireBtn').addEventListener('touchstart', () => playerShoot());
 
 function playerShoot() {
   player.bullets.push({
@@ -81,7 +75,7 @@ function startGame() {
 function updateLeaderboard() {
   let top = JSON.parse(localStorage.getItem('topScores') || '[]');
   top.push(score);
-  top = [...new Set(top)].sort((a, b) => b - a).slice(0, 3); // Удаляем дубликаты
+  top = [...new Set(top)].sort((a, b) => b - a).slice(0, 3);
   localStorage.setItem('topScores', JSON.stringify(top));
   document.getElementById('topScores').innerHTML = top.map((s, i) => `${i + 1}) ${s}`).join('<br>');
 }
@@ -94,7 +88,6 @@ function update() {
 
   if (keys['ArrowLeft']) player.x -= player.speed;
   if (keys['ArrowRight']) player.x += player.speed;
-  if (keys['Space']) playerShoot();
 
   player.x = Math.max(0, Math.min(WIDTH - player.width, player.x));
 
