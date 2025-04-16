@@ -72,7 +72,7 @@ setInterval(() => {
   if (gameStarted && !gameOver) {
     playerShoot();
   }
-}, 400);
+}, 300);
 
 function playerShoot() {
   player.bullets.push({
