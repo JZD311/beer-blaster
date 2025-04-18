@@ -2,12 +2,13 @@ const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const GAME_WIDTH = 480;
 const GAME_HEIGHT = 640;
+const BUTTON_HEIGHT = 100; // Высота, зарезервированная для кнопок (включая отступы)
 
-// Адаптация размера канваса и позиционирование кнопок
+// Адаптация размера канваса
 function resizeCanvas() {
   const aspectRatio = GAME_WIDTH / GAME_HEIGHT;
   let width = window.innerWidth;
-  let height = window.innerHeight;
+  let height = window.innerHeight - BUTTON_HEIGHT; // Вычитаем высоту кнопок
   const screenAspectRatio = width / height;
 
   if (screenAspectRatio > aspectRatio) {
@@ -23,7 +24,7 @@ function resizeCanvas() {
   canvas.style.left = `${(window.innerWidth - width) / 2}px`;
   canvas.style.top = `0px`;
 
-  const canvasBottom = height;
+  // Позиционирование кнопок
   const buttonOffset = 10;
   document.getElementById('leftButton').style.bottom = `${buttonOffset}px`;
   document.getElementById('rightButton').style.bottom = `${buttonOffset}px`;
@@ -140,22 +141,66 @@ function startGame() {
 }
 
 async function saveScore(name, score) {
-  const { error } = await client.from('scores').insert([{ nickname: name, score }]);
-  if (error) console.error('Ошибка сохранения:', error);
+  // Проверяем, есть ли игрок в таблице
+  const { data: existingScore, error: fetchError } = await client
+    .from('scores')
+    .select('score')
+    .eq('nickname', name)
+    .single();
+
+  if (fetchError && fetchError.code !== 'PGRST116') {
+    console.error('Ошибка проверки существующего счёта:', fetchError);
+    return;
+  }
+
+  if (existingScore) {
+    // Если игрок есть, обновляем счёт, если новый выше
+    if (score > existingScore.score) {
+      const { error: updateError } = await client
+        .from('scores')
+        .update({ score })
+        .eq('nickname', name);
+      if (updateError) console.error('Ошибка обновления счёта:', updateError);
+    }
+  } else {
+    // Если игрока нет, добавляем новую запись
+    const { error: insertError } = await client
+      .from('scores')
+      .insert([{ nickname: name, score }]);
+    if (insertError) console.error('Ошибка сохранения:', insertError);
+  }
 }
 
 async function loadLeaderboard() {
+  // Загружаем лучшие результаты, группируя по nickname и выбирая максимальный счёт
   const { data, error } = await client
     .from('scores')
-    .select('*')
-    .order('score', { ascending: false })
-    .limit(10);
+    .select('nickname, score')
+    .order('score', { ascending: false });
+
   if (error) {
     console.error('Ошибка загрузки топа:', error);
     return;
   }
+
+  // Группируем данные, чтобы каждый nickname был только раз с лучшим счётом
+  const leaderboardData = [];
+  const seenNicknames = new Set();
+
+  for (const entry of data) {
+    if (!seenNicknames.has(entry.nickname)) {
+      leaderboardData.push(entry);
+      seenNicknames.add(entry.nickname);
+    }
+  }
+
+  // Ограничиваем топ-10
+  const top10 = leaderboardData.slice(0, 10);
+
   const leaderboard = document.getElementById('topScores');
-  leaderboard.innerHTML = data.map((entry, i) => `${i + 1}) ${entry.nickname}: ${entry.score}`).join('<br>');
+  leaderboard.innerHTML = top10
+    .map((entry, i) => `${i + 1}) ${entry.nickname}: ${entry.score}`)
+    .join('<br>');
 }
 
 function update() {
@@ -267,11 +312,10 @@ let lastUpdateTime = 0;
 const targetFrameTime = 1000 / 60; // 16.67 мс для 60 FPS
 
 function loop(timestamp) {
-  // Проверяем, прошло ли достаточно времени для нового кадра
   if (timestamp - lastUpdateTime >= targetFrameTime) {
     update();
     draw();
-    lastUpdateTime = timestamp - (timestamp - lastUpdateTime) % targetFrameTime; // Выравниваем время
+    lastUpdateTime = timestamp - (timestamp - lastUpdateTime) % targetFrameTime;
   }
 
   if (!gameOver) {
