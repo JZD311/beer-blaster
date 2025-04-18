@@ -47,7 +47,7 @@ const bulletSpeed = 7;
 const enemySpawnInterval = 30;
 const enemySpeedRange = [1, 2]; // медленнее
 const bossAppearScore = 1500;
-const bossHP = 30;
+const bossHP = 5;
 const autoFireInterval = 400;
 const maxMissedEnemies = 5;
 
