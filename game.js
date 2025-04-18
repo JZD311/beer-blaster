@@ -256,3 +256,12 @@ function loop() {
 
 loadLeaderboard();
 window.startGame = startGame;
+// Защита от двойного тапа как зума на мобильных устройствах
+let lastTouch = 0;
+document.addEventListener('touchend', (e) => {
+  const now = new Date().getTime();
+  if (now - lastTouch <= 300) {
+    e.preventDefault();
+  }
+  lastTouch = now;
+}, false);
