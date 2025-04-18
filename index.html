@@ -1,0 +1,132 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Beer Blaster</title>
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
+  <style>
+    * {
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      overflow: hidden;
+      font-family: monospace;
+      touch-action: none;
+      height: 100%;
+      width: 100%;
+    }
+    canvas {
+      display: block;
+      position: absolute;
+      image-rendering: pixelated;
+    }
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: lime;
+      font-size: 18px;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+    #startScreen {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url('bg-menu.png') center center / cover no-repeat;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      text-align: center;
+      padding: 20px;
+    }
+    #startScreen h1 {
+      color: white;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 8px 15px;
+      border-radius: 4px;
+      font-size: 2.5em;
+      margin: 10px 0;
+    }
+    #startScreen p {
+      color: white;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 1.2em;
+      margin: 10px 0;
+    }
+    #leaderboard {
+      margin-top: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      font-size: 14px;
+      color: white;
+      border-radius: 8px;
+    }
+    button {
+      padding: 12px 24px;
+      background: lime;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .control-button {
+      position: absolute;
+      bottom: 10px; /* Временное значение, будет переопределено в JS */
+      width: 45%;
+      height: 80px;
+      z-index: 30;
+      touch-action: manipulation;
+      transition: opacity 0.1s ease;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-color: #ff6f61;
+      border-radius: 20px;
+    }
+    .control-button:active {
+      opacity: 0.8;
+    }
+    #leftButton {
+      left: 0;
+      background-image: url('leftArrow.png');
+    }
+    #rightButton {
+      right: 0;
+      background-image: url('rightArrow.png');
+    }
+  </style>
+</head>
+<body>
+  <div id="score">Счёт: 0 | Пропущено: 0 / 5</div>
+
+  <div id="startScreen">
+    <h1>🍺 Ачер vs Хадыжи</h1>
+    <p id="startText">Очисти посёлок от бутылок и победи Тимура!</p>
+    <button onclick="startGame()">Начать игру</button>
+    <div id="leaderboard">
+      <strong>🏆 Топ 10 игроков:</strong><br>
+      <div id="topScores"></div>
+    </div>
+  </div>
+
+  <canvas id="game"></canvas>
+
+  <div id="leftButton" class="control-button"></div>
+  <div id="rightButton" class="control-button"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="game.js"></script>
+  <audio id="menuMusic" src="menu.mp3" autoplay loop></audio>
+</body>
