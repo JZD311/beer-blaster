@@ -1,11 +1,13 @@
-
-<!DOCTYPE html>
-<html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Beer Blaster</title>
   <style>
+    * {
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
     html, body {
       margin: 0;
       padding: 0;
@@ -76,18 +78,21 @@
       border: none;
       font-size: 18px;
       cursor: pointer;
+      touch-action: manipulation;
     }
     .control-button {
-  position: absolute;
-  bottom: 20px;
-  width: 45%;
-  height: 60px;
-  background: rgba(255, 255, 255, 0.05);
-  z-index: 30;
-  touch-action: manipulation;
-  -webkit-user-select: none;
-  user-select: none;
-}
+      position: absolute;
+      bottom: 20px;
+      width: 45%;
+      height: 80px;
+      background: rgba(255, 255, 255, 0.05);
+      z-index: 30;
+      touch-action: manipulation;
+      transition: background 0.1s ease;
+    }
+    .control-button:active {
+      background: rgba(255, 255, 255, 0.2);
+    }
     #leftButton { left: 0; }
     #rightButton { right: 0; }
   </style>
@@ -107,17 +112,10 @@
 
   <canvas id="game"></canvas>
 
-  <!-- Виртуальные кнопки -->
   <div id="leftButton" class="control-button"></div>
   <div id="rightButton" class="control-button"></div>
 
-  <!-- Supabase SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- Основной скрипт -->
   <script src="game.js"></script>
-
-  <!-- Музыка главного меню -->
   <audio id="menuMusic" src="menu.mp3" autoplay loop></audio>
 </body>
-</html>
