@@ -256,4 +256,8 @@ function loop() {
 
 loadLeaderboard();
 window.startGame = startGame;
-
+// Убираем двойной тап на кнопках управления
+document.querySelectorAll('.control-button').forEach(btn => {
+  btn.addEventListener('touchstart', e => e.preventDefault(), { passive: false });
+  btn.addEventListener('dblclick', e => e.preventDefault());
+});
