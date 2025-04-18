@@ -3,10 +3,10 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Beer Blaster</title>
   <style>
-    html, body, * {
+    html, body {
       margin: 0;
       padding: 0;
       background: black;
@@ -15,8 +15,6 @@
       touch-action: none;
       height: 100%;
       width: 100%;
-      -webkit-user-select: none;
-      user-select: none;
     }
     canvas {
       display: block;
@@ -63,23 +61,23 @@
       font-size: 18px;
       cursor: pointer;
     }
-.control-button {
-  position: absolute;
-  bottom: 20px;
-  width: 45%;
-  height: 60px;
-  background: rgba(255, 255, 255, 0.05);
-  z-index: 30;
-}
+    .control-button {
+      position: absolute;
+      bottom: 20px;
+      width: 45%;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.05);
+      z-index: 30;
+    }
     #leftButton { left: 0; }
     #rightButton { right: 0; }
   </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
   <div id="score">Счёт: 0 | Пропущено: 0 / 5</div>
 
   <div id="startScreen">
-    <h1>🍺 Ачер против Хадыжей</h1>
+    <h1>🍺 Beer Blaster</h1>
     <p id="startText">Очисти посёлок от бутылок и победи кегу!</p>
     <button onclick="startGame()">Начать игру</button>
     <div id="leaderboard">
@@ -102,20 +100,5 @@
 
   <!-- Музыка главного меню -->
   <audio id="menuMusic" src="menu.mp3" autoplay loop></audio>
-
-  <script>
-    // Защита от двойного тапа как зума
-    let lastTouch = 0;
-    document.addEventListener('touchend', (e) => {
-      const now = new Date().getTime();
-      if (now - lastTouch <= 300) {
-        e.preventDefault();
-      }
-      lastTouch = now;
-    }, false);
-
-    // Защита от контекстного меню
-    document.addEventListener('contextmenu', e => e.preventDefault());
-  </script>
 </body>
 </html>
