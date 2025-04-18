@@ -62,13 +62,16 @@
       cursor: pointer;
     }
     .control-button {
-      position: absolute;
-      bottom: 20px;
-      width: 45%;
-      height: 60px;
-      background: rgba(255, 255, 255, 0.05);
-      z-index: 30;
-    }
+  position: absolute;
+  bottom: 20px;
+  width: 45%;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.05);
+  z-index: 30;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
     #leftButton { left: 0; }
     #rightButton { right: 0; }
   </style>
